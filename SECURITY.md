@@ -28,12 +28,20 @@ This document outlines security considerations and best practices for the Alpaca
 
 2. **DNS Rebinding Protection**
    - The MCP SDK includes DNS rebinding protection (enabled by default since v1.23.0)
-   - This server explicitly configures `TransportSecuritySettings` with rebinding protection disabled for Cloud Run compatibility
+   - This server explicitly configures `TransportSecuritySettings` in `server.py` (around line 192-194) with rebinding protection disabled for Cloud Run compatibility:
+     ```python
+     mcp = FastMCP(
+         "alpaca-trading",
+         transport_security=TransportSecuritySettings(
+             enable_dns_rebinding_protection=False
+         )
+     )
+     ```
    - **Security Consideration**: DNS rebinding protection helps prevent malicious websites from making requests to your local server. Disabling it is only recommended when:
      - Running behind a trusted reverse proxy (like Cloud Run)
      - The server is not accessible from untrusted networks
      - You have other network-level protections in place
-   - For local development or environments where the server might be accessible from untrusted networks, consider enabling this protection by modifying `enable_dns_rebinding_protection=True` in `server.py`
+   - For local development or environments where the server might be accessible from untrusted networks, you can enable this protection by modifying the source code to set `enable_dns_rebinding_protection=True`. A future version may expose this as a configuration option.
 
 ### Container Security
 
