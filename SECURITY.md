@@ -24,11 +24,16 @@ This document outlines security considerations and best practices for the Alpaca
    - The server binds to `127.0.0.1` (localhost) by default for security
    - Use `0.0.0.0` only when external access is required (e.g., in containers)
    - When deploying in containers, rely on network policies for isolation
+   - **Breaking Change Note**: Prior to this version, the default was `0.0.0.0`. Update your configuration if needed.
 
 2. **DNS Rebinding Protection**
    - The MCP SDK includes DNS rebinding protection (enabled by default since v1.23.0)
    - This server explicitly configures `TransportSecuritySettings` with rebinding protection disabled for Cloud Run compatibility
-   - For deployments requiring rebinding protection, adjust the `enable_dns_rebinding_protection` setting
+   - **Security Consideration**: DNS rebinding protection helps prevent malicious websites from making requests to your local server. Disabling it is only recommended when:
+     - Running behind a trusted reverse proxy (like Cloud Run)
+     - The server is not accessible from untrusted networks
+     - You have other network-level protections in place
+   - For local development or environments where the server might be accessible from untrusted networks, consider enabling this protection by modifying `enable_dns_rebinding_protection=True` in `server.py`
 
 ### Container Security
 

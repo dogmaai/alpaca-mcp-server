@@ -21,8 +21,9 @@ RUN chown -R alpaca:alpaca /app
 USER alpaca
 
 # Health check for container orchestration
+# Verifies the Python module is importable and the CLI is functional
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import alpaca_mcp_server" || exit 1
+    CMD python -c "from alpaca_mcp_server import __version__; print(__version__)" || exit 1
 
 # Run the MCP server with HTTP transport
 # Note: Using 0.0.0.0 in container context is required for external access
