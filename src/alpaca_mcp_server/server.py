@@ -131,6 +131,7 @@ except ImportError:
     )
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 import contextvars
 
 # Context variable to store Authorization header from incoming HTTP requests
@@ -185,7 +186,13 @@ log_level = "ERROR" if is_pycharm else "INFO"
 log_level = "DEBUG" if DEBUG.lower() == "true" else log_level
 
 # Initialize FastMCP server
-mcp = FastMCP("alpaca-trading", log_level=log_level)
+mcp = FastMCP(
+    "alpaca-trading",
+    log_level=log_level,
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False
+    )
+)
 
 # Convert string to boolean
 ALPACA_PAPER_TRADE_BOOL = ALPACA_PAPER_TRADE.lower() not in ['false', '0', 'no', 'off']

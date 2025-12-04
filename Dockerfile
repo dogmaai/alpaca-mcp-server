@@ -1,5 +1,4 @@
 FROM python:3.11-slim
-
 WORKDIR /app
 
 # Copy project files
@@ -11,5 +10,5 @@ COPY .github/core .github/core
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir .
 
-# Run the MCP server using the CLI entry point
-CMD ["alpaca-mcp-server", "serve"]
+# Run the MCP server with HTTP transport
+CMD ["alpaca-mcp-server", "serve", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8080"]
