@@ -3142,8 +3142,16 @@ class AlpacaMCPServer:
             DEBUG = os.getenv("DEBUG", "False")
             ALPACA_PAPER_TRADE_BOOL = ALPACA_PAPER_TRADE.lower() not in ['false', '0', 'no', 'off']
 
-    def run(self, transport: str = "stdio", host: str = "0.0.0.0", port: int = 8000) -> None:
-    # def run(self, transport: str = "stdio", host: str = "127.0.0.1", port: int = 8000) -> None:
+    def run(self, transport: str = "stdio", host: str = "127.0.0.1", port: int = 8000) -> None:
+        """
+        Start the MCP server with the specified transport.
+        
+        Args:
+            transport: Transport method ('stdio' or 'streamable-http')
+            host: Host to bind for HTTP transport (default: '127.0.0.1' for security)
+                  Use '0.0.0.0' to bind to all interfaces when needed (e.g., in containers)
+            port: Port to bind for HTTP transport (default: 8000)
+        """
         if transport == "streamable-http":
             # Configure FastMCP settings for host/port with current MCP versions
             mcp.settings.host = host

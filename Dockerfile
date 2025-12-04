@@ -1,4 +1,8 @@
 FROM python:3.11-slim
+
+# Security: Create a non-root user
+RUN groupadd -r alpaca && useradd -r -g alpaca alpaca
+
 WORKDIR /app
 
 # Copy project files
@@ -10,5 +14,17 @@ COPY .github/core .github/core
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir .
 
+# Security: Change ownership to non-root user
+RUN chown -R alpaca:alpaca /app
+
+# Security: Switch to non-root user
+USER alpaca
+
+# Health check for container orchestration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import alpaca_mcp_server" || exit 1
+
 # Run the MCP server with HTTP transport
+# Note: Using 0.0.0.0 in container context is required for external access
+# The container network provides isolation
 CMD ["alpaca-mcp-server", "serve", "--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8080"]
