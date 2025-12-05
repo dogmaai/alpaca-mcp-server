@@ -156,11 +156,11 @@ try:
     class CryptoHistoricalDataClientSigned(UserAgentMixin, CryptoHistoricalDataClient): pass
 except ImportError:
     # Fallback to unsigned clients if mixin not available
-    TradingClientSigned = TradingClient
-    StockHistoricalDataClientSigned = StockHistoricalDataClient
-    OptionHistoricalDataClientSigned = OptionHistoricalDataClient
-    CorporateActionsClientSigned = CorporateActionsClient
-    CryptoHistoricalDataClientSigned = CryptoHistoricalDataClient
+    TradingClientSigned = TradingClient  # type: ignore[misc,assignment]
+    StockHistoricalDataClientSigned = StockHistoricalDataClient  # type: ignore[misc,assignment]
+    OptionHistoricalDataClientSigned = OptionHistoricalDataClient  # type: ignore[misc,assignment]
+    CorporateActionsClientSigned = CorporateActionsClient  # type: ignore[misc,assignment]
+    CryptoHistoricalDataClientSigned = CryptoHistoricalDataClient  # type: ignore[misc,assignment]
 
 # Load environment variables
 load_dotenv()
@@ -176,7 +176,7 @@ STREAM_DATA_WSS = os.getenv("STREAM_DATA_WSS")
 DEBUG = os.getenv("DEBUG", "False")
 
 # Initialize log level
-def detect_pycharm_environment():
+def detect_pycharm_environment() -> bool:
     """Detect if we're running in PyCharm using environment variable."""
     mcp_client = os.getenv("MCP_CLIENT", "").lower()
     return mcp_client == "pycharm"
@@ -206,7 +206,7 @@ option_historical_data_client = None
 corporate_actions_client = None
 crypto_historical_data_client = None
 
-def _inject_auth_header(client):
+def _inject_auth_header(client: Any) -> None:
     """
     Inject Authorization header from request context into Alpaca SDK HTTP requests.
     
@@ -221,7 +221,7 @@ def _inject_auth_header(client):
         session.headers['Authorization'] = auth_header
 
 
-def _ensure_clients():
+def _ensure_clients() -> None:
     """
     Initialize Alpaca clients on first use.
     
@@ -705,7 +705,7 @@ async def get_watchlists() -> str:
         return f"Error fetching watchlists: {str(e)}"
 
 @mcp.tool()
-async def update_watchlist_by_id(watchlist_id: str, name: str = None, symbols: List[str] = None) -> str:
+async def update_watchlist_by_id(watchlist_id: str, name: Optional[str] = None, symbols: Optional[List[str]] = None) -> str:
     """Update an existing watchlist."""
     _ensure_clients()
     try:
@@ -2460,12 +2460,12 @@ async def place_stock_order(
     quantity: float,
     order_type: str = "market",
     time_in_force: str = "day",
-    limit_price: float = None,
-    stop_price: float = None,
-    trail_price: float = None,
-    trail_percent: float = None,
+    limit_price: Optional[float] = None,
+    stop_price: Optional[float] = None,
+    trail_price: Optional[float] = None,
+    trail_percent: Optional[float] = None,
     extended_hours: bool = False,
-    client_order_id: str = None
+    client_order_id: Optional[str] = None
 ) -> str:
     """
     Places an order of any supported type (MARKET, LIMIT, STOP, STOP_LIMIT, TRAILING_STOP) using the correct Alpaca request class.
@@ -3091,10 +3091,10 @@ class AuthHeaderMiddleware:
     and stores it in a context variable. The header is then passed along to
     Alpaca Trading API calls.
     """
-    def __init__(self, app):
+    def __init__(self, app: Any) -> None:
         self.app = app
     
-    async def __call__(self, scope, receive, send):
+    async def __call__(self, scope: Dict[str, Any], receive: Any, send: Any) -> None:
         """Process ASGI request and extract Authorization header."""
         if scope["type"] == "http":
             # Extract Authorization header

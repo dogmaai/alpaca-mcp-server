@@ -36,7 +36,7 @@ def parse_timeframe_with_enums(timeframe_str: str) -> Optional[TimeFrame]:
         if not timeframe_str:
             return None
 
-        predefined_timeframes = {
+        predefined_timeframes: Dict[str, TimeFrame] = {
             "1Min": TimeFrame.Minute,
             "1Hour": TimeFrame.Hour,
             "1Day": TimeFrame.Day,
@@ -64,7 +64,7 @@ def parse_timeframe_with_enums(timeframe_str: str) -> Optional[TimeFrame]:
         if match:
             amount = int(match.group(1))
             unit_str = match.group(2)
-            unit_mapping = {
+            unit_mapping: Dict[str, TimeFrameUnit] = {
                 "min": TimeFrameUnit.Minute,
                 "minute": TimeFrameUnit.Minute,
                 "minutes": TimeFrameUnit.Minute,
@@ -78,25 +78,25 @@ def parse_timeframe_with_enums(timeframe_str: str) -> Optional[TimeFrame]:
                 "month": TimeFrameUnit.Month,
                 "months": TimeFrameUnit.Month,
             }
-            unit = unit_mapping.get(unit_str)
-            if unit and _validate_amount(amount, unit):
-                return TimeFrame(amount, unit)
+            unit_opt = unit_mapping.get(unit_str)
+            if unit_opt is not None and _validate_amount(amount, unit_opt):
+                return TimeFrame(amount, unit_opt)
 
         alpaca_pattern = r"^(\d+)(min|hour|day|week|month)s?$"
         match = re.match(alpaca_pattern, normalized)
         if match:
             amount = int(match.group(1))
             unit_str = match.group(2)
-            unit_mapping = {
+            unit_mapping_alpaca: Dict[str, TimeFrameUnit] = {
                 "min": TimeFrameUnit.Minute,
                 "hour": TimeFrameUnit.Hour,
                 "day": TimeFrameUnit.Day,
                 "week": TimeFrameUnit.Week,
                 "month": TimeFrameUnit.Month,
             }
-            unit = unit_mapping.get(unit_str)
-            if unit and _validate_amount(amount, unit):
-                return TimeFrame(amount, unit)
+            unit_opt = unit_mapping_alpaca.get(unit_str)
+            if unit_opt is not None and _validate_amount(amount, unit_opt):
+                return TimeFrame(amount, unit_opt)
 
         return None
     except (ValueError, AttributeError, TypeError):
@@ -162,7 +162,7 @@ def _month_name_to_number(name: str) -> int:
         return datetime.strptime(name.title(), "%b").month
 
 
-def _format_ohlcv_bar(bar, bar_type: str, include_time: bool = True) -> str:
+def _format_ohlcv_bar(bar: Any, bar_type: str, include_time: bool = True) -> str:
     if not bar:
         return ""
     time_format = "%Y-%m-%d %H:%M:%S %Z" if include_time else "%Y-%m-%d"
@@ -173,7 +173,7 @@ def _format_ohlcv_bar(bar, bar_type: str, include_time: bool = True) -> str:
 """
 
 
-def _format_quote_data(quote) -> str:
+def _format_quote_data(quote: Any) -> str:
     if not quote:
         return ""
     return f"""Latest Quote:
@@ -182,7 +182,7 @@ def _format_quote_data(quote) -> str:
 """
 
 
-def _format_trade_data(trade) -> str:
+def _format_trade_data(trade: Any) -> str:
     if not trade:
         return ""
     optional_fields: List[str] = []
@@ -282,7 +282,7 @@ def _validate_option_order_inputs(legs: List[Dict[str, Any]], quantity: int, tim
     return None
 
 
-def _convert_order_class_string(order_class: Optional[Union[str, OrderClass]]) -> Union[OrderClass, str]:
+def _convert_order_class_string(order_class: Optional[Union[str, OrderClass]]) -> Optional[Union[OrderClass, str]]:
     if order_class is None:
         return order_class
     if isinstance(order_class, OrderClass):

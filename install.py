@@ -26,7 +26,7 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 
 
-def print_header():
+def print_header() -> None:
     """Print installation header."""
     print("=" * 60)
     print("🚀 Alpaca MCP Server Installation Script")
@@ -34,7 +34,7 @@ def print_header():
     print()
 
 
-def print_step(step_num: int, description: str):
+def print_step(step_num: int, description: str) -> None:
     """Print a step in the installation process."""
     print(f"📋 Step {step_num}: {description}")
     print("-" * 40)
@@ -238,7 +238,7 @@ def get_venv_python(venv_path: Path) -> Path:
         return venv_path / "bin" / "python"
 
 
-def install_dependencies(uv_path: str, venv_path: Path, project_dir: Path):
+def install_dependencies(uv_path: str, venv_path: Path, project_dir: Path) -> None:
     """Install required dependencies using uv in virtual environment."""
     print_step(3, "Installing Dependencies")
 
@@ -356,7 +356,7 @@ def prompt_for_api_keys() -> Dict[str, str]:
     }
 
 
-def create_env_file(project_dir: Path, api_config: Dict[str, str]):
+def create_env_file(project_dir: Path, api_config: Dict[str, str]) -> None:
     """Create .env file with API configuration."""
     print_step(6, "Creating Environment File")
     
@@ -473,7 +473,7 @@ def load_mcp_config(config_path: Path, client_name: str) -> Dict[str, Any]:
             content = f.read().strip()
             if not content:
                 return {"mcpServers": {}}
-            config = json.loads(content)
+            config: Dict[str, Any] = json.loads(content)
             
         # Ensure mcpServers section exists
         if "mcpServers" not in config:
@@ -564,7 +564,7 @@ def update_client_configuration(selected_client: str, mcp_config: Dict[str, Any]
         return False
 
 
-def print_instructions(project_dir: Path, venv_path: Path, config: Dict[str, Any], selected_client: str, config_success: bool):
+def print_instructions(project_dir: Path, venv_path: Path, config: Dict[str, Any], selected_client: str, config_success: bool) -> None:
     """Print final setup instructions."""
     print_step(8, "Setup Complete - Next Steps")
     
@@ -664,7 +664,7 @@ def print_instructions(project_dir: Path, venv_path: Path, config: Dict[str, Any
     print(f"   ✅ Installation complete! Enjoy trading with {client_name}! 🚀")
 
 
-def main():
+def main() -> None:
     """Main installation function."""
     print_header()
     

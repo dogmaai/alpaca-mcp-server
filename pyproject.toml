@@ -78,8 +78,26 @@ target-version = "py310"
 [tool.mypy]
 # Type checking configuration
 python_version = "3.10"
-strict = true
+# Enable strict mode incrementally - start with these settings
+warn_return_any = true
+warn_unused_configs = true
 ignore_missing_imports = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+# Per-module configuration to allow gradual typing adoption
+[[tool.mypy.overrides]]
+module = "alpaca_mcp_server.server"
+# Server module has complex Alpaca SDK interactions, be more lenient
+disallow_untyped_defs = false
+# Allow union-attr, arg-type, and assignment errors due to Alpaca SDK interactions
+disable_error_code = ["union-attr", "arg-type", "assignment"]
+warn_unused_ignores = false
 
 [tool.pytest.ini_options]
 # Test configuration

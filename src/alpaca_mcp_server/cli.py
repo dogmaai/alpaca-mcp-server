@@ -18,7 +18,7 @@ from . import __version__
 
 @click.group()
 @click.version_option(version=__version__, prog_name="alpaca-mcp")
-def main():
+def main() -> None:
     """
     Alpaca MCP Server - Trading API integration for Model Context Protocol.
 
@@ -58,7 +58,7 @@ def main():
     help='Path to .env configuration file (default: .env in current directory)'
 )
 def init(api_key: Optional[str], secret_key: Optional[str],
-         paper: bool, config_file: Optional[Path]):
+         paper: bool, config_file: Optional[Path]) -> None:
     """
     Initialize Alpaca MCP server configuration.
 
@@ -145,7 +145,7 @@ def init(api_key: Optional[str], secret_key: Optional[str],
     type=click.Path(path_type=Path),
     help='Path to .env configuration file (default: .env in current directory)'
 )
-def serve(transport: str, host: str, port: int, config_file: Optional[Path]):
+def serve(transport: str, host: str, port: int, config_file: Optional[Path]) -> None:
     """
     Start the Alpaca MCP server.
 
@@ -219,7 +219,7 @@ def serve(transport: str, host: str, port: int, config_file: Optional[Path]):
     type=click.Path(path_type=Path),
     help='Path to .env configuration file (default: .env in current directory)'
 )
-def status(config_file: Optional[Path]):
+def status(config_file: Optional[Path]) -> None:
     """
     Show current server configuration and status.
 
